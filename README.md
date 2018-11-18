@@ -8,17 +8,37 @@ A specific Rust target must be installed, and it can be done as follows:
 
 `$ rustup target add x86_64-unknown-linux-musl`
 
-The `musl-gcc` package must also be installed. On Ubuntu, it would be done as follows:
+The `musl-gcc` package must also be installed. 
+On Ubuntu, it would be done as follows:
 
 `$ apt-get install musl`
 
-After installing the target and `musl-gcc`, compiling is only a matter of executing the following command:
+On Mac, it can be done using this brew formula:
+
+`$ brew install FiloSottile/musl-cross/musl-cross`
+
+On Mac, yoiu will need to tell Cargo where to find the linker. 
+You can place the following into your projects .cargo/config or configure it globally in your ~/.cargo/config
+
+`[target.x86_64-unknown-linux-musl]
+linker = "x86_64-linux-musl-gcc"`
+
+After installing the target and `musl-gcc`, compiling is only a matter of executing the cargo build command:
 
 `$ cargo build --target x86_64-unknown-linux-musl`
 
 In case you want to compile a release version, you must add the `--release` flag:
 
 `$ cargo build --target x86_64-unknown-linux-musl --release`
+
+Cross-compiling on Mac:
+The .cargo/config configuration above tells Cargo what linker to use, but you also need to tell build scripts what compiler to use. To do so you need to use the environment variable `CC_x86_64_unknown_linux_musl`. You can do this for all shells using:
+
+`$ export CC_x86_64_unknown_linux_musl="x86_64-linux-musl-gcc"`
+
+or prefix your `cargo build` command with it to just apply it to that build:
+
+`$CC_x86_64_unknown_linux_musl="x86_64-linux-musl-gcc" cargo build --release --target x86_64-unknown-linux-musl`
 
 ## Running
 
